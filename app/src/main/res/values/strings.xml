@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">Bluetooth Volume</string>
+    <string name="menu_main_about">About</string>
+
+    <string name="dialog_newdevice_title">Manage new device</string>
+    <string name="dialog_newdevice_add">Add</string>
+    <string name="dialog_newdevice_cancel">Cancel</string>
+
+    <string name="snackbar_deleted_item">Deleted %s</string>
+    <string name="snackbar_deletion_undo_action">Undo</string>
+    <string name="snackbar_deletion_undone">%s is restored</string>
+    <string name="snackbar_added_item">%1$s set to %2$d%%</string>
+    <string name="snackbar_err_no_devicesAvailable">No devices available to manage</string>
+
+
+
+    <string name="about_developer">
+        Written by Timo Schlömer
+        \n
+        Github profile: https://github.com/timosl
+        \n
+        E-Mail: tsdev@posteo.de
+    </string>
+
+    <string name="about_license" translatable="false">
+        The MIT License (MIT)
+        \n\n
+Copyright (&#169;) 2015 Timo Schlömer
+\n\n
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+\n\n
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+\n\n
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+    </string>
+
+    <string name="about_icons">Icons courtesy of https://design.google.com/icons/</string>
+</resources>

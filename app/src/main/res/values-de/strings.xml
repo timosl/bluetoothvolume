@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Bluetooth Lautstärke</string>
+    <string name="menu_main_about">Über</string>
+
+    <string name="dialog_newdevice_add">Hinzufügen</string>
+    <string name="dialog_newdevice_cancel">Abbrechen</string>
+    <string name="dialog_newdevice_title">Neues Gerät verwalten</string>
+
+    <string name="snackbar_added_item">%1$s auf %2$d%% eingestellt</string>
+    <string name="snackbar_deleted_item">%s gelöscht</string>
+    <string name="snackbar_deletion_undo_action">Rückgängig</string>
+    <string name="snackbar_deletion_undone">%s wiederhergestellt</string>
+    <string name="snackbar_err_no_devicesAvailable">Keine Geräte zum Verwalten gefunden</string>
+
+    <string name="about_developer">
+        Geschrieben von Timo Schlömer
+        \n
+        Github Profil: https://github.com/timosl
+        \n
+        E-Mail: tsdev@posteo.de
+    </string>
+
+    <string name="about_icons">Icons bereitgestellt von https://design.google.com/icons/</string>
+</resources>

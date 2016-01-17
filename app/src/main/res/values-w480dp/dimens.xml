@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="item_device_list_width">480dp</dimen>
+    <dimen name="activity_about_divider">480dp</dimen>
+</resources>
