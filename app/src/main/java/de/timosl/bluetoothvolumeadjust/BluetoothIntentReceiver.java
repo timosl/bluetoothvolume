@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.util.Log;
 
 /**
@@ -41,11 +42,37 @@ public class BluetoothIntentReceiver extends BroadcastReceiver {
             if(audioManager.isBluetoothA2dpOn() && audioManager.isMusicActive()) {
                 adjustAudio(context,device);
             }
-            // If there is no music playing right now, we will wait till the music player launches
-            // itself and starts playing (or the user does this manually)
+
+            // If there is currently no music playing, adjusting the volume of the Music-Channel
+            // will not affect the volume for the bluetooth device. Android handles music volume over
+            // bluetooth differently and will only allow changes when music is actively being played
+            // over bluetooth.
             else {
                 // Store the time so we can abort after a certain interval
                 long musicWaitBegin = System.currentTimeMillis();
+
+                // If no music is currently playing, a silent music track
+                // will be played
+                if(!audioManager.isMusicActive()) {
+                    Log.i(MainActivity.TAG,"No music is currently being played. Playing a silent track to enable proper volume adjustment");
+
+                    try {
+                        // Create and start a MediaPlayer playing a silent music track
+                        MediaPlayer silencePlayer = MediaPlayer.create(context, R.raw.silence);
+                        silencePlayer.start();
+
+                        // Release the resources of the MediaPlayer after the
+                        // track has been played
+                        silencePlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                mp.release();
+                            }
+                        });
+                    } catch(Exception exception) {
+                        Log.e(MainActivity.TAG,"There was an error playing the silent track: "+exception);
+                    }
+                }
 
                 // Stay in this loop until music is being played
                 while(!audioManager.isMusicActive()) {
