@@ -16,6 +16,8 @@
 
     <string name="preference_show_indicator_title">Show volume indicator</string>
     <string name="preference_show_indicator_summary">Display the systems volume indicator when changing volume.</string>
+    <string name="preference_reset_volume_on_disconnect_title">Reset volume</string>
+    <string name="preference_reset_volume_on_disconnect_summary">Reset the volume to its previous level after a device disconnects. Useful if the smartphone cannot set the volume for Speakers, Headphones and Bluetooth devices independently.</string>
 
     <string name="about_developer">
         Written by Timo Schlömer
@@ -49,5 +51,5 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
     </string>
 
-    <string name="about_icons">Icons courtesy of https://design.google.com/icons/</string>
+    <string name="about_icons">Icons courtesy of https://design.google.com/icons</string>
 </resources>

@@ -21,8 +21,10 @@
         E-Mail: tsdev@posteo.de
     </string>
 
-    <string name="about_icons">Icons bereitgestellt von https://design.google.com/icons/</string>
+    <string name="about_icons">Icons bereitgestellt von https://design.google.com/icons</string>
     <string name="menu_main_settings">Einstellungen</string>
     <string name="preference_show_indicator_summary">Zeige den Lautstärkeregler wenn die Lautstärke geändert wird.</string>
     <string name="preference_show_indicator_title">Zeige Lautstärkeregler</string>
+    <string name="preference_reset_volume_on_disconnect_title"> Lautstärke zurücksetzen</string>
+    <string name="preference_reset_volume_on_disconnect_summary">Setzt die Lautstärke auf den vorherigen Wert zurück wenn ein Gerät getrennt wurde. Nützlich wenn das Smartphone die Lautstärke für Lautsprecher, Kopfhörer und Bluetooth Geräte nicht unabhängig von einander einstellen kann.</string>
 </resources>

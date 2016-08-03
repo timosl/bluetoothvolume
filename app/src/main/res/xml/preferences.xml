@@ -4,4 +4,10 @@
         android:title="@string/preference_show_indicator_title"
         android:summary="@string/preference_show_indicator_summary"
         android:defaultValue="true"/>
+
+    <SwitchPreference android:key="pref_reset_volume_on_disconnect"
+        android:title="@string/preference_reset_volume_on_disconnect_title"
+        android:summary="@string/preference_reset_volume_on_disconnect_summary"
+        android:defaultValue="false"/>
+
 </PreferenceScreen>
