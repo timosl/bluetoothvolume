@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference android:key="pref_show_indicator"
+        android:title="@string/preference_show_indicator_title"
+        android:summary="@string/preference_show_indicator_summary"
+        android:defaultValue="true"/>
+</PreferenceScreen>

@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * The main (and only) {@link AppCompatActivity} that the user
- * will be able to interact with. Here the user can add new
+ * The main {@link AppCompatActivity} that the user
+ * will see most of the time. Here the user can add new
  * devices to manage and remove existing ones.
  */
 public class MainActivity extends AppCompatActivity {
@@ -306,15 +306,28 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Start the AboutActivity if the associated menu item
-        // was selected by the user
-        if(item.getItemId() == R.id.menu_main_about) {
-            Intent intent = new Intent(this,AboutActivity.class);
-            startActivity(intent);
-            return true;
-        }
+        switch (item.getItemId()) {
+            // Start the AboutActivity if the associated menu item
+            // was selected by the user
+            case R.id.menu_main_about: {
+                Intent intent = new Intent(this,AboutActivity.class);
+                startActivity(intent);
+                return true;
+            }
 
-        return super.onOptionsItemSelected(item);
+            // Start the PreferenceActivity if the associated menu item
+            // was selected by the user
+            case R.id.menu_main_settings: {
+                Intent intent = new Intent(this,CustomPreferenceActivity.class);
+                startActivity(intent);
+                return true;
+            }
+
+            // Default case when something else was selected
+            default: {
+                return super.onOptionsItemSelected(item);
+            }
+        }
     }
 
     @Override

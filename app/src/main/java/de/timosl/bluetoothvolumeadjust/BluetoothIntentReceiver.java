@@ -110,12 +110,15 @@ public class BluetoothIntentReceiver extends BroadcastReceiver {
         if(volume != -1f) {
             Log.d(MainActivity.TAG,"Adjusting volume for "+device.getName());
 
+            // Check the user preference if the volume indicator should be displayed
+            int showIndicatorFlag = Preferences.getShowIndicatorEnabled(context) ? AudioManager.FLAG_SHOW_UI : 0;
+
             // Apply the specified volume as a multiplier to the maximum volume for the
             // music stream.
             AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
             int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
             int newVolume = (int) (maxVolume * volume);
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,newVolume,AudioManager.FLAG_SHOW_UI);
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,newVolume,showIndicatorFlag);
         } else {
             Log.w(MainActivity.TAG,"There is no volume set for this device: "+device.getName());
         }

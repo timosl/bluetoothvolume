@@ -5,16 +5,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 /**
- * This {@link AppCompatActivity} displays the user
- * some information about the author and the
- * software license.
+ * The {@link AppCompatActivity} that displays configurable settings
+ * to the user.
  */
-public class AboutActivity extends AppCompatActivity {
+public class CustomPreferenceActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about);
+        setContentView(R.layout.activity_settings);
 
         // Set the Toolbar from the support library
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -22,6 +21,6 @@ public class AboutActivity extends AppCompatActivity {
 
         // Display the Up-Navigation and the correct title on the toolbar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(R.string.menu_main_about);
+        getSupportActionBar().setTitle(R.string.menu_main_settings);
     }
 }

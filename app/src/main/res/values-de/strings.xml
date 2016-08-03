@@ -22,4 +22,7 @@
     </string>
 
     <string name="about_icons">Icons bereitgestellt von https://design.google.com/icons/</string>
+    <string name="menu_main_settings">Einstellungen</string>
+    <string name="preference_show_indicator_summary">Zeige den Lautstärkeregler wenn die Lautstärke geändert wird.</string>
+    <string name="preference_show_indicator_title">Zeige Lautstärkeregler</string>
 </resources>
