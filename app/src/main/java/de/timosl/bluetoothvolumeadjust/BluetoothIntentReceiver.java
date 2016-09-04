@@ -47,7 +47,7 @@ public class BluetoothIntentReceiver extends BroadcastReceiver {
 
         // Perform the necessary actions when a device is DISCONNECTED
         if(state == BluetoothProfile.STATE_DISCONNECTED) {
-            onDeviceDisconnected(context);
+            onDeviceDisconnected(context, device);
         }
     }
 
@@ -74,9 +74,21 @@ public class BluetoothIntentReceiver extends BroadcastReceiver {
         // Get a reference to the audio manager
         AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
+        // Retrieve the volume the user has set for this device
+        float volumePercentage = DeviceManagment.getDeviceVolume(context,device.getAddress());
+
+        // Do not change the volume if there is no value set for this device
+        if(volumePercentage == -1f) {
+            return;
+        }
+
+        // Convert the users value to a format the AudioManager can use
+        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        int newVolume = (int) (maxVolume * volumePercentage);
+
         // If we're already playing music on the Bluetooth device, we can adjust the volume right away
         if(audioManager.isBluetoothA2dpOn() && audioManager.isMusicActive()) {
-            adjustAudio(context,device);
+            adjustAudio(context,newVolume);
         }
 
         // If there is currently no music playing, adjusting the volume of the Music-Channel
@@ -84,50 +96,7 @@ public class BluetoothIntentReceiver extends BroadcastReceiver {
         // bluetooth differently and will only allow changes when music is actively being played
         // over bluetooth.
         else {
-            // Store the time so we can abort after a certain interval
-            long musicWaitBegin = System.currentTimeMillis();
-
-            // If no music is currently playing, a silent music track
-            // will be played
-            if(!audioManager.isMusicActive()) {
-                Log.i(MainActivity.TAG,"No music is currently being played. Playing a silent track to enable proper volume adjustment");
-
-                try {
-                    // Create and start a MediaPlayer playing a silent music track
-                    MediaPlayer silencePlayer = MediaPlayer.create(context, R.raw.silence);
-                    silencePlayer.start();
-
-                    // Release the resources of the MediaPlayer after the
-                    // track has been played
-                    silencePlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mp) {
-                            mp.release();
-                        }
-                    });
-                } catch(Exception exception) {
-                    Log.e(MainActivity.TAG,"There was an error playing the silent track: "+exception);
-                }
-            }
-
-            // Stay in this loop until music is being played
-            while(!audioManager.isMusicActive()) {
-                try {
-                    // Don't completely waste CPU cycles
-                    Thread.sleep(100L);
-
-                    // Abort if we waited too long already
-                    if(System.currentTimeMillis() - musicWaitBegin > MUSIC_TIMEOUT) {
-                        Log.w(MainActivity.TAG,"There was no music playing after "+(System.currentTimeMillis() - musicWaitBegin)+"ms, not adjusting volume");
-                        return;
-                    }
-                } catch (InterruptedException e) {}
-            }
-            Log.d(MainActivity.TAG,"Waited "+(System.currentTimeMillis()-musicWaitBegin)+"ms");
-
-            // If we ended up here, there should be music playing on the Bluetooth device,
-            // so we can finally adjust the volume
-            adjustAudio(context,device);
+            playSilenceAndAdjustVolume(context, newVolume);
         }
     }
 
@@ -135,52 +104,114 @@ public class BluetoothIntentReceiver extends BroadcastReceiver {
      * Called when a registered device is now disconnected.
      * @param context The applications {@link Context}
      */
-    private void onDeviceDisconnected(Context context) {
+    private void onDeviceDisconnected(Context context, BluetoothDevice device) {
         // Get a reference to the audio manager
         AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
+        // Do not change the volume if we don't manage the device that is now disconnected
+        if(DeviceManagment.getDeviceVolume(context,device.getAddress()) == -1f) {
+            return;
+        }
+
         // Reset the media volume if the user enabled the corresponding setting
         if(Preferences.getResetVolumeOnDisconnect(context)) {
-            // Check the user preference if the volume indicator should be displayed
-            int showIndicatorFlag = Preferences.getShowIndicatorEnabled(context) ? AudioManager.FLAG_SHOW_UI : 0;
 
             // Get the previous volume
             int previousVolume = Preferences.getLastMediaVolume(context);
 
-            // Ensure a previous volume was stored
-            if(previousVolume != -1) {
-                // Set the volume to its previous level
-                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,previousVolume,showIndicatorFlag);
+            // Check if there is already music playing on the device. If yes, we can change
+            // the volume right away.
+            if(audioManager.isMusicActive()) {
+                adjustAudio(context,previousVolume);
+            }
 
-                Log.d(MainActivity.TAG,"Volume reset to previous value");
+            // If there is no music playing, we just play a silent track to ensure the correct
+            // audio stream will be changed.
+            else {
+                playSilenceAndAdjustVolume(context,previousVolume);
             }
         }
     }
 
     /**
-     * Adjusts the volume for the currently connected device.
+     * Adjusts the volume of the music audio stream with the given value.
      * @param context The applications {@link Context}
-     * @param device The {@link BluetoothDevice} to change the volume for
+     * @param volume The volume to set. Using '-1' will not adjust the volume.
      */
-    private void adjustAudio(Context context, BluetoothDevice device) {
-        // Get the volume for this device
-        float volume = DeviceManagment.getDeviceVolume(context,device.getAddress());
-
-        // Check if a volume has been set for this device
-        if(volume != -1f) {
-            Log.d(MainActivity.TAG,"Adjusting volume for "+device.getName());
-
-            // Check the user preference if the volume indicator should be displayed
-            int showIndicatorFlag = Preferences.getShowIndicatorEnabled(context) ? AudioManager.FLAG_SHOW_UI : 0;
-
-            // Apply the specified volume as a multiplier to the maximum volume for the
-            // music stream.
-            AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-            int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-            int newVolume = (int) (maxVolume * volume);
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,newVolume,showIndicatorFlag);
-        } else {
-            Log.w(MainActivity.TAG,"There is no volume set for this device: "+device.getName());
+    private void adjustAudio(Context context, int volume) {
+        // Check if a volume has been set
+        if(volume == -1f) {
+            return;
         }
+
+        // Check the user preference if the volume indicator should be displayed
+        int showIndicatorFlag = Preferences.getShowIndicatorEnabled(context) ? AudioManager.FLAG_SHOW_UI : 0;
+
+        // Apply the specified volume as a multiplier to the maximum volume for the
+        // music stream.
+        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,volume,showIndicatorFlag);
+    }
+
+    /**
+     * Adjusts the volume of the music audio stream with the given value while playing
+     * a silent audio track. This ensures that the correct audio stream will be changed.
+     * This could otherwise be a problem with some devices.
+     * @param context The applications {@link Context}
+     * @param volume The volume to set. Using '-1' will not adjust the volume.
+     */
+    private void playSilenceAndAdjustVolume(Context context, int volume) {
+        // Check if a volume has been set
+        if(volume == -1) {
+            return;
+        }
+
+        // Get a reference to the audio manager
+        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+
+        // Store the time so we can abort after a certain interval
+        long musicWaitBegin = System.currentTimeMillis();
+
+        // If no music is currently playing, a silent music track
+        // will be played
+        if(!audioManager.isMusicActive()) {
+            Log.i(MainActivity.TAG,"No music is currently being played. Playing a silent track to enable proper volume adjustment");
+
+            try {
+                // Create and start a MediaPlayer playing a silent music track
+                MediaPlayer silencePlayer = MediaPlayer.create(context, R.raw.silence);
+                silencePlayer.start();
+
+                // Release the resources of the MediaPlayer after the
+                // track has been played
+                silencePlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        mp.release();
+                    }
+                });
+            } catch(Exception exception) {
+                Log.e(MainActivity.TAG,"There was an error playing the silent track: "+exception);
+            }
+        }
+
+        // Stay in this loop until music is being played
+        while(!audioManager.isMusicActive()) {
+            try {
+                // Don't completely waste CPU cycles
+                Thread.sleep(100L);
+
+                // Abort if we waited too long already
+                if(System.currentTimeMillis() - musicWaitBegin > MUSIC_TIMEOUT) {
+                    Log.w(MainActivity.TAG,"There was no music playing after "+(System.currentTimeMillis() - musicWaitBegin)+"ms, not adjusting volume");
+                    return;
+                }
+            } catch (InterruptedException e) {}
+        }
+        Log.d(MainActivity.TAG,"Waited "+(System.currentTimeMillis()-musicWaitBegin)+"ms and setting volume to "+volume);
+
+        // If we ended up here, there should be music playing on the Bluetooth device,
+        // so we can finally adjust the volume
+        adjustAudio(context,volume);
     }
 }
