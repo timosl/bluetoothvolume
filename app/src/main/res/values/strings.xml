@@ -2,6 +2,7 @@
     <string name="app_name">Bluetooth Volume</string>
 
     <string name="menu_main_settings">Settings</string>
+    <string name="menu_main_sendReport">Send problem report</string>
     <string name="menu_main_about">About</string>
 
     <string name="dialog_newdevice_title">Manage new device</string>
@@ -18,6 +19,8 @@
     <string name="preference_show_indicator_summary">Display the systems volume indicator when changing volume.</string>
     <string name="preference_reset_volume_on_disconnect_title">Reset volume</string>
     <string name="preference_reset_volume_on_disconnect_summary">Reset the volume to its previous level after a device disconnects. Useful if the smartphone cannot set the volume for Speakers, Headphones and Bluetooth devices independently.</string>
+    <string name="preference_enable_debugging_title">Enable debugging</string>
+    <string name="preference_enable_debugging_summary">Record this apps behaviour to provide feedback for the developer.</string>
 
     <string name="about_developer">
         Written by Timo Schlömer

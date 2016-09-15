@@ -27,4 +27,7 @@
     <string name="preference_show_indicator_title">Zeige Lautstärkeregler</string>
     <string name="preference_reset_volume_on_disconnect_title"> Lautstärke zurücksetzen</string>
     <string name="preference_reset_volume_on_disconnect_summary">Setzt die Lautstärke auf den vorherigen Wert zurück wenn ein Gerät getrennt wurde. Nützlich wenn das Smartphone die Lautstärke für Lautsprecher, Kopfhörer und Bluetooth Geräte nicht unabhängig von einander einstellen kann.</string>
+    <string name="menu_main_sendReport">Sende Problembericht</string>
+    <string name="preference_enable_debugging_summary">Zeichnet das Verhalten der App auf um Feedback an den Entwickler zu senden. </string>
+    <string name="preference_enable_debugging_title">Ermögliche Fehlerbehebung</string>
 </resources>

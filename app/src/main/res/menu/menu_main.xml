@@ -4,6 +4,9 @@
     <item android:title="@string/menu_main_settings"
         android:id="@+id/menu_main_settings"
         app:showAsAction="never"/>
+    <item android:title="@string/menu_main_sendReport"
+        android:id="@+id/menu_main_sendReport"
+        app:showAsAction="never"/>
     <item
         android:title="@string/menu_main_about"
         android:id="@+id/menu_main_about"

@@ -13,17 +13,22 @@ public class Preferences {
     /**
      * Key for the volume indicator setting.
      */
-    private static final String KEY_SHOW_INDICATOR = "pref_show_indicator";
+    public static final String KEY_SHOW_INDICATOR = "pref_show_indicator";
 
     /**
      * Key for the volume reset on disconnect setting.
      */
-    private static final String KEY_RESET_VOLUME_ON_DISCONNECT = "pref_reset_volume_on_disconnect";
+    public static final String KEY_RESET_VOLUME_ON_DISCONNECT = "pref_reset_volume_on_disconnect";
 
     /**
      * Key for the last media volume setting.
      */
-    private static final String KEY_LAST_MEDIA_VOLUME = "pref_last_media_volume";
+    public static final String KEY_LAST_MEDIA_VOLUME = "pref_last_media_volume";
+
+    /**
+     * Key for enabling debugging into a file.
+     */
+    public static final String KEY_ENABLE_DEBUGGING = "pref_enable_debugging";
 
     /**
      * Returns if the systems volume indicator should be shown during volume changes or
@@ -64,5 +69,14 @@ public class Preferences {
      */
     public static int getLastMediaVolume(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context).getInt(KEY_LAST_MEDIA_VOLUME,-1);
+    }
+
+    /**
+     * Returns if debugging is enabled.
+     * @param context The applications {@link Context}
+     * @return Returns 'true' if debugging is currently enabled
+     */
+    public static boolean getEnableDebugging(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(KEY_ENABLE_DEBUGGING,false);
     }
 }

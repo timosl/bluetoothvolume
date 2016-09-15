@@ -31,22 +31,25 @@ public class BluetoothIntentReceiver extends BroadcastReceiver {
 
         // Check if the Intent was properly filled
         if(state == -1 || device == null) {
-            Log.e(MainActivity.TAG, "The received intent was not valid");
+            L.w("(BluetoothIntentReceiver) The received intent was not valid. Received: "+intent);
             return;
         }
 
         // Perform the necessary actions when a device is CONNECTING
         if(state == BluetoothProfile.STATE_CONNECTING) {
+            L.i(String.format("(BluetoothIntentReceiver) The device %s (%s) is now CONNECTING",device.getName(),device.getAddress()));
             onDeviceConnecting(context);
         }
 
         // Perform the necessary actions when a device is CONNECTED
         if(state == BluetoothProfile.STATE_CONNECTED) {
+            L.i(String.format("(BluetoothIntentReceiver) The device %s (%s) is now CONNECTED",device.getName(),device.getAddress()));
             onDeviceConnected(context, device);
         }
 
         // Perform the necessary actions when a device is DISCONNECTED
         if(state == BluetoothProfile.STATE_DISCONNECTED) {
+            L.i(String.format("(BluetoothIntentReceiver) The device %s (%s) is now DISCONNECTING",device.getName(),device.getAddress()));
             onDeviceDisconnected(context, device);
         }
     }
@@ -62,7 +65,10 @@ public class BluetoothIntentReceiver extends BroadcastReceiver {
 
         // Store the current media volume so we can reset it later (if needed)
         int currentMediaVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        int maxMediaVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         Preferences.setLastMediaVolume(context,currentMediaVolume);
+
+        L.i(String.format("(BluetoothIntentReceiver) Storing current media volume: %d out of %d",currentMediaVolume, maxMediaVolume));
     }
 
     /**
@@ -79,6 +85,7 @@ public class BluetoothIntentReceiver extends BroadcastReceiver {
 
         // Do not change the volume if there is no value set for this device
         if(volumePercentage == -1f) {
+            L.w(String.format("(BluetoothIntentReceiver) No volume set for device %s (%s). Is this device managed?",device.getName(),device.getAddress()));
             return;
         }
 
@@ -110,6 +117,7 @@ public class BluetoothIntentReceiver extends BroadcastReceiver {
 
         // Do not change the volume if we don't manage the device that is now disconnected
         if(DeviceManagment.getDeviceVolume(context,device.getAddress()) == -1f) {
+            L.i(String.format("(BluetoothIntentReceiver) The device %s (%s) is not managed by us, not resetting volume",device.getName(),device.getAddress()));
             return;
         }
 
@@ -118,6 +126,7 @@ public class BluetoothIntentReceiver extends BroadcastReceiver {
 
             // Get the previous volume
             int previousVolume = Preferences.getLastMediaVolume(context);
+            L.i(String.format("(BluetoothIntentReceiver) Device disconnected, restoring volume back to %d on user request",previousVolume));
 
             // Check if there is already music playing on the device. If yes, we can change
             // the volume right away.
@@ -130,6 +139,8 @@ public class BluetoothIntentReceiver extends BroadcastReceiver {
             else {
                 playSilenceAndAdjustVolume(context,previousVolume);
             }
+        } else {
+            L.i(String.format("(BluetoothIntentReceiver) Not restoring volume on user request"));
         }
     }
 
@@ -141,6 +152,7 @@ public class BluetoothIntentReceiver extends BroadcastReceiver {
     private void adjustAudio(Context context, int volume) {
         // Check if a volume has been set
         if(volume == -1f) {
+            L.w(String.format("(BluetoothIntentReceiver) No valid volume passed to adjustAudio() (%d given)",volume));
             return;
         }
 
@@ -163,6 +175,7 @@ public class BluetoothIntentReceiver extends BroadcastReceiver {
     private void playSilenceAndAdjustVolume(Context context, int volume) {
         // Check if a volume has been set
         if(volume == -1) {
+            L.w(String.format("(BluetoothIntentReceiver) No valid volume passed to playSilenceAndAdjustVolume() (%d given)",volume));
             return;
         }
 
@@ -175,7 +188,7 @@ public class BluetoothIntentReceiver extends BroadcastReceiver {
         // If no music is currently playing, a silent music track
         // will be played
         if(!audioManager.isMusicActive()) {
-            Log.i(MainActivity.TAG,"No music is currently being played. Playing a silent track to enable proper volume adjustment");
+            L.i("(BluetoothIntentReceiver) No music is currently being played. Playing a silent track to enable proper volume adjustment");
 
             try {
                 // Create and start a MediaPlayer playing a silent music track
@@ -188,10 +201,11 @@ public class BluetoothIntentReceiver extends BroadcastReceiver {
                     @Override
                     public void onCompletion(MediaPlayer mp) {
                         mp.release();
+                        L.i("(BluetoothIntentReceiver) Media playback released");
                     }
                 });
             } catch(Exception exception) {
-                Log.e(MainActivity.TAG,"There was an error playing the silent track: "+exception);
+                L.w("(BluetoothIntentReceiver) There was an error playing the silent track: "+exception);
             }
         }
 
@@ -203,12 +217,14 @@ public class BluetoothIntentReceiver extends BroadcastReceiver {
 
                 // Abort if we waited too long already
                 if(System.currentTimeMillis() - musicWaitBegin > MUSIC_TIMEOUT) {
-                    Log.w(MainActivity.TAG,"There was no music playing after "+(System.currentTimeMillis() - musicWaitBegin)+"ms, not adjusting volume");
+                    L.w("There was no music playing after "+(System.currentTimeMillis() - musicWaitBegin)+"ms, not adjusting volume");
                     return;
                 }
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+                L.w("(BluetoothIntentReceiver) Interrupted while waiting for media playback");
+            }
         }
-        Log.d(MainActivity.TAG,"Waited "+(System.currentTimeMillis()-musicWaitBegin)+"ms and setting volume to "+volume);
+        L.i("(BluetoothIntentReceiver) Waited "+(System.currentTimeMillis()-musicWaitBegin)+"ms and setting volume to "+volume);
 
         // If we ended up here, there should be music playing on the Bluetooth device,
         // so we can finally adjust the volume

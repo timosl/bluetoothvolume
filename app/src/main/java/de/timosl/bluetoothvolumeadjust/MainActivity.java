@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -37,11 +38,6 @@ import java.util.Set;
 public class MainActivity extends AppCompatActivity {
 
     /**
-     * The {@link Log} prefix.
-     */
-    public static final String TAG = "bluetoothAdjust";
-
-    /**
      * The {@link RecyclerView} that will display the devices
      * managed by the app.
      */
@@ -58,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
      * add a new device.
      */
     private FloatingActionButton newDeviceFAB;
+
+    private boolean displayDebugOption;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +127,20 @@ public class MainActivity extends AppCompatActivity {
         // Attach the ItemTouchHelper to the RV
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(deviceList);
+
+        // Check if the debug options should be displayed
+        displayDebugOption = Preferences.getEnableDebugging(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Restart the acitivty if the debug preference has changed
+        // so we can recreate the context menu
+        if(displayDebugOption != Preferences.getEnableDebugging(this)) {
+            recreate();
+        }
     }
 
     private void checkNewDeviceFABVisibility() {
@@ -178,9 +190,24 @@ public class MainActivity extends AppCompatActivity {
      * should be shown to the user and 'false' otherwise
      */
     private boolean isNewDevicesAvailable() {
-        return BluetoothAdapter.getDefaultAdapter() != null
-                && BluetoothAdapter.getDefaultAdapter().getBondedDevices().size() > 0
-                && BluetoothAdapter.getDefaultAdapter().getBondedDevices().size() != DeviceManagment.getDevices(this).size();
+        if (BluetoothAdapter.getDefaultAdapter() == null) {
+            L.w("(MainActivity) There is no bluetooth adapter available, there may be a hardware error or the Bluetooth permission has been revoked");
+            return false;
+        }
+
+        if (BluetoothAdapter.getDefaultAdapter().getBondedDevices().size() == 0) {
+            L.w("(MainActivity) There are no devices paired");
+            return false;
+        }
+
+        for(BluetoothDevice device: BluetoothAdapter.getDefaultAdapter().getBondedDevices()) {
+            if(!DeviceManagment.getDevices(this).contains(device.getAddress())) {
+                return true;
+            }
+        }
+
+        L.i("(MainActivity) No device left to manage");
+        return false;
     }
 
     /**
@@ -217,7 +244,6 @@ public class MainActivity extends AppCompatActivity {
             // Make sure that the Bluetooth Adapter is available to us
             // or we will fail later on
             if(BluetoothAdapter.getDefaultAdapter() == null) {
-                Log.w(TAG,"There is no bluetooth adapter available!");
                 // If we end up here, we probably have to hide the NewDeviceFAB
                 checkNewDeviceFABVisibility();
                 return;
@@ -315,6 +341,11 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
 
+            case R.id.menu_main_sendReport: {
+                sendProblemReport();
+                return true;
+            }
+
             // Start the PreferenceActivity if the associated menu item
             // was selected by the user
             case R.id.menu_main_settings: {
@@ -332,9 +363,37 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
+
+        // If the debug preference is not set, hide the corresponding
+        // context menu entry
+        if(!Preferences.getEnableDebugging(this)) {
+            menu.findItem(R.id.menu_main_sendReport).setVisible(false);
+        }
+
         return true;
+    }
+
+    /**
+     * Opens an E-Mail application to share the problem report.
+     */
+    private void sendProblemReport() {
+        // The E-Mail contents
+        String header = "-> Add a description of your problem here <-\n\n==============Do not change anything under this line============\n\n";
+        String report = L.getLog();
+
+        // Create the intent
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setType("text/plain");
+        intent.setData(Uri.parse("mailto:"));
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"tsdev@posteo.de"});
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Bluetooth Volume Adjust Problem Report");
+        intent.putExtra(Intent.EXTRA_TEXT, header+report);
+
+        // Start the E-Mail application
+        startActivity(Intent.createChooser(intent, "Send Report"));
     }
 }
 
