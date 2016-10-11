@@ -1,4 +1,4 @@
-package de.timosl.bluetoothvolumeadjust;
+package de.timosl.bluetoothvolumeadjust.receivers;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
@@ -7,8 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.preference.Preference;
-import android.util.Log;
+
+import de.timosl.bluetoothvolumeadjust.util.DeviceManagment;
+import de.timosl.bluetoothvolumeadjust.util.L;
+import de.timosl.bluetoothvolumeadjust.util.Preferences;
+import de.timosl.bluetoothvolumeadjust.R;
 
 /**
  * A {@link BroadcastReceiver} that will listen for the 'android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED'

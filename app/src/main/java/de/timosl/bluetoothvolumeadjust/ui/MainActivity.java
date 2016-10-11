@@ -1,4 +1,4 @@
-package de.timosl.bluetoothvolumeadjust;
+package de.timosl.bluetoothvolumeadjust.ui;
 
 import android.app.DialogFragment;
 import android.bluetooth.BluetoothAdapter;
@@ -30,6 +30,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import de.timosl.bluetoothvolumeadjust.util.DeviceManagment;
+import de.timosl.bluetoothvolumeadjust.util.L;
+import de.timosl.bluetoothvolumeadjust.util.Preferences;
+import de.timosl.bluetoothvolumeadjust.R;
+
 /**
  * The main {@link AppCompatActivity} that the user
  * will see most of the time. Here the user can add new
@@ -55,6 +60,11 @@ public class MainActivity extends AppCompatActivity {
      */
     private FloatingActionButton newDeviceFAB;
 
+    /**
+     * The debug option how it was set the last time this
+     * activity was created. Used for determining whether
+     * to show the debug menu entry or not.
+     */
     private boolean displayDebugOption;
 
     @Override
@@ -151,10 +161,14 @@ public class MainActivity extends AppCompatActivity {
             // showing the NewDeviceFAB
             newDeviceFAB.show();
         } else {
+            if(BluetoothAdapter.getDefaultAdapter() == null || !BluetoothAdapter.getDefaultAdapter().isEnabled()) {
+                Snackbar.make(newDeviceFAB,R.string.snackbar_err_no_adapterAvailable,Snackbar.LENGTH_INDEFINITE).show();
+            }
+
             // If there are new devices available to add and we
             // don't have any right now, something is wrong.
             // We better let the user know.
-            if(DeviceManagment.getDevices(this).size() == 0) {
+            else if(DeviceManagment.getDevices(this).size() == 0) {
                 Snackbar.make(newDeviceFAB,R.string.snackbar_err_no_devicesAvailable,Snackbar.LENGTH_INDEFINITE).show();
             }
 

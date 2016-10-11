@@ -21,7 +21,7 @@
         <fragment
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:name="de.timosl.bluetoothvolumeadjust.CustomPreferenceFragment"
+            android:name="de.timosl.bluetoothvolumeadjust.ui.CustomPreferenceFragment"
             android:tag="TAG_PREFERENCE_FRAGMENT"/>
 
     </LinearLayout>

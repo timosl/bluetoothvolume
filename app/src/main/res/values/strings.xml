@@ -14,6 +14,7 @@
     <string name="snackbar_deletion_undone">%s is restored</string>
     <string name="snackbar_added_item">%1$s set to %2$d%%</string>
     <string name="snackbar_err_no_devicesAvailable">No devices available to manage</string>
+    <string name="snackbar_err_no_adapterAvailable">Bluetooth is disabled</string>
 
     <string name="preference_show_indicator_title">Show volume indicator</string>
     <string name="preference_show_indicator_summary">Display the systems volume indicator when changing volume.</string>

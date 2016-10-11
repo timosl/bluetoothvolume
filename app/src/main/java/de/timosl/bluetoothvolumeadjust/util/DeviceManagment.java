@@ -1,4 +1,4 @@
-package de.timosl.bluetoothvolumeadjust;
+package de.timosl.bluetoothvolumeadjust.util;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;

@@ -1,4 +1,4 @@
-package de.timosl.bluetoothvolumeadjust;
+package de.timosl.bluetoothvolumeadjust.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -18,6 +18,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import de.timosl.bluetoothvolumeadjust.util.DeviceManagment;
+import de.timosl.bluetoothvolumeadjust.R;
 
 /**
  * A custom {@link DialogFragment} that allows the user to

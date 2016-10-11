@@ -1,8 +1,12 @@
-package de.timosl.bluetoothvolumeadjust;
+package de.timosl.bluetoothvolumeadjust.ui;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+
+import de.timosl.bluetoothvolumeadjust.util.L;
+import de.timosl.bluetoothvolumeadjust.util.Preferences;
+import de.timosl.bluetoothvolumeadjust.R;
 
 /**
  * A {@link PreferenceFragment} that displays settings as a Fragment to the user.

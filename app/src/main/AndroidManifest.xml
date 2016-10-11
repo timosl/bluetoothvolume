@@ -9,7 +9,7 @@
         android:theme="@style/AppTheme"
         android:name=".ApplicationDelegate">
 
-        <activity android:name=".MainActivity"
+        <activity android:name=".ui.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -17,14 +17,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".AboutActivity"
+        <activity android:name=".ui.AboutActivity"
             android:label="@string/menu_main_about"
-            android:parentActivityName=".MainActivity"/>
-        <activity android:name=".CustomPreferenceActivity"
+            android:parentActivityName=".ui.MainActivity"/>
+        <activity android:name=".ui.CustomPreferenceActivity"
             android:label="@string/menu_main_settings"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".ui.MainActivity"/>
 
-        <receiver android:name=".BluetoothIntentReceiver"
+        <receiver android:name=".receivers.BluetoothIntentReceiver"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED" />

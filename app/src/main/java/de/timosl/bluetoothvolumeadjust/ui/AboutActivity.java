@@ -1,8 +1,10 @@
-package de.timosl.bluetoothvolumeadjust;
+package de.timosl.bluetoothvolumeadjust.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
+import de.timosl.bluetoothvolumeadjust.R;
 
 /**
  * This {@link AppCompatActivity} displays the user

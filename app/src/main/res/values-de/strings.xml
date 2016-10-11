@@ -30,4 +30,5 @@
     <string name="menu_main_sendReport">Sende Problembericht</string>
     <string name="preference_enable_debugging_summary">Zeichnet das Verhalten der App auf um Feedback an den Entwickler zu senden. </string>
     <string name="preference_enable_debugging_title">Ermögliche Fehlerbehebung</string>
+    <string name="snackbar_err_no_adapterAvailable">Bluetooth ist deaktiviert</string>
 </resources>
